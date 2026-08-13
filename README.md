@@ -54,9 +54,8 @@ API reference
 
 ```typescript
 function configure(configurators: Array<Configurator | Linter.Config>, options?: { cwd?: string } | null): Linter.Config[];
-
-const gitignore: Configurator;
-const ignores: Configurator;
+function gitignore(): Configurator;
+function ignores(...files: string[]): Configurator;
 ```
 
 Contributions
