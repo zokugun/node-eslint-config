@@ -1,9 +1,9 @@
 import type { Linter } from 'eslint';
-import type { Configurator } from '@zokugun/eslint-toolkit';
+import type { Configurator, Resolver } from '@zokugun/eslint-toolkit';
 
 import fse from '@zokugun/fs-extra-plus/sync'
 import { type IniResult, parseINI } from '@zokugun/ini-parse-lite';
-import { isFunction } from '@zokugun/is-it-type';
+import { isArray, isFunction, isNullable } from '@zokugun/is-it-type';
 
 import { getEditorConfigSection } from './utils/getEditorConfigSection.js';
 import { isModule } from './utils/isModule.js';
@@ -32,11 +32,12 @@ export function configure(configurators: Array<Configurator | Linter.Config>, op
 	values['cwd'] = cwd;
 	values['isModule'] = isModule(cwd);
 
-	const resolve = <T>(name: string): T | undefined => {
+	const resolve: Resolver = <T>(name: string, defaultValue?: T | T[]): T[] | T | undefined => {
 		if(name === '__proto__') {
 			return undefined;
 		}
-		else if(name.startsWith('editorconfig/')) {
+
+		if(name.startsWith('editorconfig/')) {
 			if(editorConfig) {
 				const ext = name.slice(13);
 
@@ -46,9 +47,18 @@ export function configure(configurators: Array<Configurator | Linter.Config>, op
 				return undefined;
 			}
 		}
-		else {
-			return values[name] as T;
+
+		const value = values[name];
+
+		if(isNullable(value)) {
+			return defaultValue;
 		}
+
+		if(isArray(defaultValue) && !isArray(value)) {
+			return [value] as T[];
+		}
+
+		return value as T;
 	}
 
 	const register = (name: string, value: unknown) => {

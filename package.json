@@ -54,7 +54,7 @@
 		"watch:src": "tsc-watch -p src"
 	},
 	"dependencies": {
-		"@zokugun/eslint-toolkit": "0.1.0",
+		"@zokugun/eslint-toolkit": "0.2.0",
 		"@zokugun/fs-extra-plus": "0.6.1",
 		"@zokugun/ini-parse-lite": "0.1.0",
 		"@zokugun/is-it-type": "0.8.1",
