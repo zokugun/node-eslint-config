@@ -66,11 +66,13 @@ export function configure(configurators: Array<Configurator | Linter.Config>, op
 			return;
 		}
 		else if(name in values) {
-			if(Array.isArray(values[name])) {
-				values[name].push(value);
+			let container = Array.isArray(values[name]) ? values[name] : (values[name] = [values[name]]);
+
+			if(Array.isArray(value)) {
+				container.push(...value);
 			}
 			else {
-				values[name] = [values[name], value];
+				container.push(value);
 			}
 		}
 		else {
